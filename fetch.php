@@ -9,20 +9,31 @@ $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-o
 // Fetch the response using file_get_contents
 $response = @file_get_contents($apiURL);
 
-// Check for errors in fetching the response
+// Check if the response is false (fetch failed)
 if ($response === false) {
-    // Output the error message to help debug
-    echo json_encode(["error" => "Failed to fetch data from API.", "details" => error_get_last()]);
+    // Output error details
+    echo json_encode([
+        "error" => "Failed to fetch data from API.",
+        "details" => error_get_last()
+    ]);
     exit;
 }
+
+// Output the raw response to help with debugging
+echo json_encode([
+    "raw_response" => $response
+]);
 
 // Decode the JSON response
 $data = json_decode($response, true);
 
 // Check for JSON errors
 if (json_last_error() !== JSON_ERROR_NONE) {
-    // Output the JSON error message to help debug
-    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg(), "response" => $response]);
+    // Output the JSON error and raw response to help debug the issue
+    echo json_encode([
+        "error" => "Invalid JSON returned from API: " . json_last_error_msg(),
+        "response" => $response
+    ]);
     exit;
 }
 

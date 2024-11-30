@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UOB Student Nationalities</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>UOB Student Enrollment by Nationality</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main>
@@ -12,25 +12,27 @@
         <table>
             <thead>
                 <tr>
-                    <th>College</th>
+                    <th>Year</th>
+                    <th>Semester</th>
                     <th>Program</th>
                     <th>Nationality</th>
+                    <th>College</th>
                     <th>Count</th>
                 </tr>
             </thead>
             <tbody id="data-body">
-                <!-- Data will be populated dynamically -->
+                <!-- Data will be dynamically populated -->
             </tbody>
         </table>
     </main>
     <script>
-        // Fetch data from the PHP backend
+        // Fetch data from fetch.php
         fetch("fetch.php")
             .then(response => response.json())
             .then(data => {
                 const tbody = document.getElementById("data-body");
                 if (data.error) {
-                    tbody.innerHTML = `<tr><td colspan="4">${data.error}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
                 } else {
                     data.forEach(row => {
                         const tr = document.createElement("tr");
@@ -46,7 +48,7 @@
             .catch(error => {
                 console.error("Error fetching data:", error);
                 const tbody = document.getElementById("data-body");
-                tbody.innerHTML = `<tr><td colspan="4">An error occurred while fetching data.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6">An error occurred while fetching data.</td></tr>`;
             });
     </script>
 </body>

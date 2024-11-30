@@ -1,32 +1,34 @@
 <?php
-// API URL
-$apiURL = "https://data.gov.bh/explore/embed/dataset/01-statistics-of-students-nationalities_updated/table/?disjunctive.year&disjunctive.semester&disjunctive.the_programs&sort=number_of_students&static=false&datasetcard=false";
+// API Endpoint URL
+$apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
 
 // Fetch data from the API
-$html = file_get_contents($apiURL);
+$response = file_get_contents($apiURL);
 
-if ($html === false) {
-    echo json_encode(["error" => "Unable to fetch data"]);
+if ($response === false) {
+    echo json_encode(["error" => "Unable to fetch data from API"]);
     exit;
 }
 
-// Parse HTML and extract table rows
-$dom = new DOMDocument();
-@$dom->loadHTML($html);
-$xpath = new DOMXPath($dom);
-$rows = $xpath->query("//table/tbody/tr");
+// Decode JSON response
+$data = json_decode($response, true);
 
-// Prepare the data as an array
-$data = [];
-foreach ($rows as $row) {
-    $cols = $xpath->query("td", $row);
-    $rowData = [];
-    foreach ($cols as $col) {
-        $rowData[] = trim($col->nodeValue);
-    }
-    $data[] = $rowData;
+// Extract records
+$records = $data['records'] ?? [];
+
+// Prepare data for the table
+$result = [];
+foreach ($records as $record) {
+    $fields = $record['record'] ?? [];
+    $result[] = [
+        $fields['year'] ?? 'N/A',
+        $fields['semester'] ?? 'N/A',
+        $fields['the_programs'] ?? 'N/A',
+        $fields['nationality'] ?? 'N/A',
+        $fields['colleges'] ?? 'N/A',
+        $fields['number_of_students'] ?? 'N/A',
+    ];
 }
 
-// Return the data as JSON
-echo json_encode($data);
-?>
+// Return as JSON
+echo json_encode($result);

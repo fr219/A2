@@ -7,6 +7,7 @@ $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-o
 // Fetch data from API
 $response = file_get_contents($apiURL);
 
+// Debugging: Check the raw response
 if ($response === false) {
     echo json_encode(["error" => "Unable to fetch data from the API."]);
     exit;
@@ -15,10 +16,16 @@ if ($response === false) {
 // Decode JSON response
 $data = json_decode($response, true);
 
-// Check if records exist
+// Check for JSON errors
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg()]);
+    exit;
+}
+
+// Check if 'records' key exists and is not empty
 $records = $data['records'] ?? [];
 if (empty($records)) {
-    echo json_encode(["error" => "No data available from the API."]);
+    echo json_encode(["error" => "No records available from the API."]);
     exit;
 }
 
@@ -36,5 +43,5 @@ foreach ($records as $record) {
     ];
 }
 
-// Return JSON-encoded result
+// Return the formatted data as JSON
 echo json_encode($result);

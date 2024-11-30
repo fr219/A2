@@ -6,38 +6,45 @@ header("Access-Control-Allow-Origin: *");
 // API URL
 $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
 
-// Fetch the response using file_get_contents
+// Try fetching data using file_get_contents() first
 $response = @file_get_contents($apiURL);
 
-// Check if the response is false (fetch failed)
-if ($response === false) {
-    // Output error details
-    echo json_encode([
-        "error" => "Failed to fetch data from API.",
-        "details" => error_get_last()
-    ]);
+// If file_get_contents() fails, use cURL as fallback
+if ($response === FALSE) {
+    // Initialize cURL session
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiURL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+    // Execute cURL request
+    $response = curl_exec($ch);
+
+    // Check for cURL errors
+    if (curl_errno($ch)) {
+        echo json_encode(["error" => "cURL Error: " . curl_error($ch)]);
+        exit;
+    }
+
+    curl_close($ch);
+}
+
+if ($response === FALSE) {
+    echo json_encode(["error" => "Failed to fetch data from API."]);
     exit;
 }
 
-// Output the raw response to help with debugging
-echo json_encode([
-    "raw_response" => $response
-]);
-
-// Decode the JSON response
+// Decode JSON response
 $data = json_decode($response, true);
 
 // Check for JSON errors
 if (json_last_error() !== JSON_ERROR_NONE) {
-    // Output the JSON error and raw response to help debug the issue
-    echo json_encode([
-        "error" => "Invalid JSON returned from API: " . json_last_error_msg(),
-        "response" => $response
-    ]);
+    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg()]);
     exit;
 }
 
-// Check if 'results' key exists and has data
+// Check if 'results' key exists and is not empty
 $results = $data['results'] ?? [];
 if (empty($results)) {
     echo json_encode(["error" => "No results available from the API."]);
@@ -59,4 +66,3 @@ foreach ($results as $record) {
 
 // Return the formatted data as JSON
 echo json_encode($result);
-?>

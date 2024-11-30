@@ -18,9 +18,9 @@ $response = curl_exec($ch);
 // Check for cURL errors
 if (curl_errno($ch)) {
     echo json_encode(["error" => "cURL Error: " . curl_error($ch)]);
+    curl_close($ch);
     exit;
 }
-
 curl_close($ch);
 
 // Check if the response is empty or not JSON
@@ -38,28 +38,25 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-// Check if 'records' key exists and is not empty
-$records = $data['records'] ?? [];
-if (empty($records)) {
-    echo json_encode(["error" => "No records available from the API."]);
+// Check if 'results' key exists and is not empty
+$results = $data['results'] ?? [];
+if (empty($results)) {
+    echo json_encode(["error" => "No results available from the API."]);
     exit;
 }
 
 // Prepare data for the frontend
 $result = [];
-foreach ($records as $record) {
-    $fields = $record['record'] ?? [];
+foreach ($results as $record) {
     $result[] = [
-        $fields['year'] ?? 'N/A',
-        $fields['semester'] ?? 'N/A',
-        $fields['the_programs'] ?? 'N/A',
-        $fields['nationality'] ?? 'N/A',
-        $fields['colleges'] ?? 'N/A',
-        $fields['number_of_students'] ?? 'N/A',
+        $record['year'] ?? 'N/A',
+        $record['semester'] ?? 'N/A',
+        $record['the_programs'] ?? 'N/A',
+        $record['nationality'] ?? 'N/A',
+        $record['colleges'] ?? 'N/A',
+        $record['number_of_students'] ?? 'N/A',
     ];
 }
 
 // Return the formatted data as JSON
 echo json_encode($result);
-
-?>

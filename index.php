@@ -30,12 +30,12 @@
                     // Loop through the results and output table rows
                     foreach ($result as $record) {
                         echo "<tr>";
-                        echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>"; // Year
+                        echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>"; // Semester
+                        echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>"; // Program
+                        echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>"; // Nationality
+                        echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>"; // College
+                        echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>"; // Number of Students
                         echo "</tr>";
                     }
                 } else {

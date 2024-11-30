@@ -1,3 +1,6 @@
+<?php
+ob_start(); // Start output buffering to prevent premature output
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,25 +25,23 @@
             </thead>
             <tbody>
                 <?php
-                // Include the fetch.php code to fetch and process the data
-                include 'fetch.php';
+                // Fetch data from fetch.php
+                $apiData = file_get_contents('fetch.php');
+                $data = json_decode($apiData, true);
 
-                // Check if there was any error in fetch.php (via $result array)
-                if (isset($result) && !empty($result)) {
-                    // Loop through the results and output table rows
-                    foreach ($result as $record) {
+                if (isset($data['error'])) {
+                    echo "<tr><td colspan='6'>" . htmlspecialchars($data['error']) . "</td></tr>";
+                } else {
+                    foreach ($data as $record) {
                         echo "<tr>";
-                        echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>"; // Year
-                        echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>"; // Semester
-                        echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>"; // Program
-                        echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>"; // Nationality
-                        echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>"; // College
-                        echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>"; // Number of Students
+                        echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>";
                         echo "</tr>";
                     }
-                } else {
-                    // If no data is available
-                    echo "<tr><td colspan='6'>No data available from the API.</td></tr>";
                 }
                 ?>
             </tbody>
@@ -48,3 +49,6 @@
     </main>
 </body>
 </html>
+<?php
+ob_end_flush(); // End output buffering
+?>

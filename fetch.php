@@ -16,16 +16,17 @@ $response = curl_exec($ch);
 
 // Check for cURL errors
 if (curl_errno($ch)) {
-    echo json_encode(["error" => "cURL Error: " . curl_error($ch)]);
-    exit;
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  echo json_encode(["error" => "cURL Error: " . curl_error($ch) . " (HTTP Code: $httpCode)"]);
+  exit;
 }
 
 curl_close($ch);
 
 // Check if the response is empty or not JSON
 if (empty($response)) {
-    echo json_encode(["error" => "No data received from the API."]);
-    exit;
+  echo json_encode(["error" => "No data received from the API."]);
+  exit;
 }
 
 // Decode JSON response
@@ -33,31 +34,30 @@ $data = json_decode($response, true);
 
 // Check for JSON errors
 if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg()]);
-    exit;
+  echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg()]);
+  exit;
 }
 
 // Check if 'records' key exists and is not empty
 $records = $data['records'] ?? [];
 if (empty($records)) {
-    echo json_encode(["error" => "No records available from the API."]);
-    exit;
+  echo json_encode(["error" => "No records available from the API."]);
+  exit;
 }
 
 // Prepare data for the frontend
 $result = [];
 foreach ($records as $record) {
-    $fields = $record['record'] ?? [];
-    $result[] = [
-        $fields['year'] ?? 'N/A',
-        $fields['semester'] ?? 'N/A',
-        $fields['the_programs'] ?? 'N/A',
-        $fields['nationality'] ?? 'N/A',
-        $fields['colleges'] ?? 'N/A',
-        $fields['number_of_students'] ?? 'N/A',
-    ];
+  $fields = $record['record'] ?? [];
+  $result[] = [
+    'year' => $fields['year'] ?? 'N/A',
+    'semester' => $fields['semester'] ?? 'N/A',
+    'program' => $fields['the_programs'] ?? 'N/A', // Changed for clarity
+    'nationality' => $fields['nationality'] ?? 'N/A',
+    'college' => $fields['colleges'] ?? 'N/A',
+    'numberOfStudents' => $fields['number_of_students'] ?? 'N/A', // Changed for clarity
+  ];
 }
 
 // Return the formatted data as JSON
 echo json_encode($result);
-?>

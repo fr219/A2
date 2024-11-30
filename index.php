@@ -28,28 +28,28 @@
     <script>
         // Fetch data from the PHP backend
         fetch("fetch.php")
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById("data-body");
-                if (data.error) {
-                    tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
-                } else {
-                    data.forEach(row => {
-                        const tr = document.createElement("tr");
-                        row.forEach(cell => {
-                            const td = document.createElement("td");
-                            td.textContent = cell;
-                            tr.appendChild(td);
-                        });
-                        tbody.appendChild(tr);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                const tbody = document.getElementById("data-body");
-                tbody.innerHTML = `<tr><td colspan="6">An error occurred while fetching data.</td></tr>`;
+    .then(response => response.json())
+    .then(data => {
+        const tbody = document.getElementById("data-body");
+        if (data.error) {
+            tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
+        } else {
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                row.forEach(cell => {
+                    const td = document.createElement("td");
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
             });
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+        const tbody = document.getElementById("data-body");
+        tbody.innerHTML = `<tr><td colspan="6">An error occurred while fetching data.</td></tr>`;
+    });
     </script>
 </body>
 </html>

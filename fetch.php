@@ -27,7 +27,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-// Check if 'results' key exists
+// Check if 'results' key exists and has data
 $results = $data['results'] ?? [];
 if (empty($results)) {
     echo json_encode(["error" => "No results available from the API."]);
@@ -37,6 +37,7 @@ if (empty($results)) {
 // Prepare data for the frontend
 $result = [];
 foreach ($results as $record) {
+    // Safely handle missing or null values
     $result[] = [
         $record['year'] ?? 'N/A',
         $record['semester'] ?? 'N/A',
@@ -49,3 +50,4 @@ foreach ($results as $record) {
 
 // Return the formatted data as JSON
 echo json_encode($result);
+

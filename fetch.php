@@ -4,12 +4,27 @@ header("Content-Type: application/json");
 // API URL
 $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
 
-// Fetch data from API
-$response = file_get_contents($apiURL);
+// Initialize cURL session
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $apiURL);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-// Debugging: Check the raw response
-if ($response === false) {
-    echo json_encode(["error" => "Unable to fetch data from the API."]);
+// Execute cURL request
+$response = curl_exec($ch);
+
+// Check for cURL errors
+if (curl_errno($ch)) {
+    echo json_encode(["error" => "cURL Error: " . curl_error($ch)]);
+    exit;
+}
+
+curl_close($ch);
+
+// Check if the response is empty or not JSON
+if (empty($response)) {
+    echo json_encode(["error" => "No data received from the API."]);
     exit;
 }
 
@@ -29,7 +44,7 @@ if (empty($records)) {
     exit;
 }
 
-// Parse and format the data
+// Prepare data for the frontend
 $result = [];
 foreach ($records as $record) {
     $fields = $record['record'] ?? [];
@@ -45,3 +60,4 @@ foreach ($records as $record) {
 
 // Return the formatted data as JSON
 echo json_encode($result);
+?>

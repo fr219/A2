@@ -1,9 +1,13 @@
+/* Basic styling for the body and overall layout */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
     color: #333;
+    margin: 0;
+    padding: 0;
 }
 
+/* Main container */
 main {
     max-width: 1200px;
     margin: 2rem auto;
@@ -13,6 +17,7 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Header styling */
 h1 {
     text-align: center;
     margin-bottom: 2rem;
@@ -20,12 +25,14 @@ h1 {
     color: #0056b3;
 }
 
+/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 2rem;
 }
 
+/* Table header styling */
 table thead th {
     background-color: #007bff;
     color: #ffffff;
@@ -33,27 +40,41 @@ table thead th {
     padding: 0.75rem;
 }
 
+/* Table body cell styling */
 table tbody td {
     padding: 0.75rem;
     border-bottom: 1px solid #dee2e6;
 }
 
+/* Alternate row background color */
 table tbody tr:nth-child(odd) {
     background-color: #f8f9fa;
 }
 
+/* Row hover effect */
 table tbody tr:hover {
     background-color: #e9ecef;
 }
 
+/* Message displayed in case of no data */
 td[colspan="6"] {
     text-align: center;
     font-style: italic;
     color: #6c757d;
 }
 
+/* Responsive table adjustments */
 @media (max-width: 768px) {
     table {
         font-size: 0.9rem;
+    }
+
+    table thead th,
+    table tbody td {
+        padding: 0.5rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
     }
 }

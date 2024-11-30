@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody id="data-body">
-                <!-- Data will be dynamically inserted here -->
+                <!-- Data will be populated dynamically -->
             </tbody>
         </table>
     </main>
@@ -31,11 +31,8 @@
             .then(response => response.json())
             .then(data => {
                 const tbody = document.getElementById("data-body");
-
                 if (data.error) {
                     tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
-                } else if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6">No data available</td></tr>`;
                 } else {
                     data.forEach(row => {
                         const tr = document.createElement("tr");

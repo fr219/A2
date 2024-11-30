@@ -20,7 +20,7 @@
                     <th>Number of Students</th>
                 </tr>
             </thead>
-            <tbody id="data-body">
+            <tbody id="data-body" class="loading">
                 <!-- Data will be populated dynamically -->
             </tbody>
         </table>

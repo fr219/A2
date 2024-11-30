@@ -78,3 +78,11 @@ td[colspan="6"] {
         font-size: 1.5rem;
     }
 }
+
+/* Loading state for table */
+table.loading tbody td {
+    text-align: center;
+    padding: 1rem;
+    color: #007bff;
+    font-style: italic;
+}

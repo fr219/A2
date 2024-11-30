@@ -6,24 +6,14 @@ header("Access-Control-Allow-Origin: *");
 // API URL
 $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
 
-// Initialize cURL session
-$ch = curl_init();
+// Fetch the response using file_get_contents
+$response = @file_get_contents($apiURL);
 
-// Set cURL options
-curl_setopt($ch, CURLOPT_URL, $apiURL);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification (use true in production)
-
-$response = curl_exec($ch);
-
-// Check for errors in cURL execution
+// Check for errors
 if ($response === false) {
-    echo json_encode(["error" => "Failed to fetch data from API. cURL error: " . curl_error($ch)]);
+    echo json_encode(["error" => "Failed to fetch data from API."]);
     exit;
 }
-
-// Close the cURL session
-curl_close($ch);
 
 // Decode the JSON response
 $data = json_decode($response, true);

@@ -23,7 +23,7 @@ if (curl_errno($ch)) {
 
 curl_close($ch);
 
-// Check if the response is empty
+// Check if the response is empty or not JSON
 if (empty($response)) {
     echo json_encode(["error" => "No data received from the API."]);
     exit;
@@ -61,4 +61,5 @@ foreach ($records as $record) {
 
 // Return the formatted data as JSON
 echo json_encode($result);
+
 ?>

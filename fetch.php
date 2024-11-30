@@ -1,4 +1,5 @@
 <?php
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
@@ -8,9 +9,10 @@ $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-o
 // Fetch the response using file_get_contents
 $response = @file_get_contents($apiURL);
 
-// Check for errors
+// Check for errors in fetching the response
 if ($response === false) {
-    echo json_encode(["error" => "Failed to fetch data from API."]);
+    // Output the error message to help debug
+    echo json_encode(["error" => "Failed to fetch data from API.", "details" => error_get_last()]);
     exit;
 }
 
@@ -19,7 +21,8 @@ $data = json_decode($response, true);
 
 // Check for JSON errors
 if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg()]);
+    // Output the JSON error message to help debug
+    echo json_encode(["error" => "Invalid JSON returned from API: " . json_last_error_msg(), "response" => $response]);
     exit;
 }
 

@@ -46,7 +46,7 @@ table tbody tr:hover {
     background-color: #e9ecef;
 }
 
-td[colspan="4"] {
+td[colspan="6"] {
     text-align: center;
     font-style: italic;
     color: #6c757d;

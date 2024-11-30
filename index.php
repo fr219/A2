@@ -26,21 +26,32 @@ ob_start(); // Start output buffering to prevent premature output
             <tbody>
                 <?php
                 // Fetch data from fetch.php
-                $apiData = file_get_contents('fetch.php');
-                $data = json_decode($apiData, true);
+                $apiData = @file_get_contents('fetch.php'); // Suppress errors for debugging
 
-                if (isset($data['error'])) {
-                    echo "<tr><td colspan='6'>" . htmlspecialchars($data['error']) . "</td></tr>";
+                // Check if the data is valid JSON
+                if ($apiData === false) {
+                    echo "<tr><td colspan='6'>Failed to fetch data from API (fetch.php not reachable).</td></tr>";
                 } else {
-                    foreach ($data as $record) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>";
-                        echo "</tr>";
+                    $data = json_decode($apiData, true); // Decode the JSON data
+
+                    // Check if the data is decoded successfully
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        echo "<tr><td colspan='6'>Error decoding JSON: " . json_last_error_msg() . "</td></tr>";
+                    } else {
+                        if (empty($data)) {
+                            echo "<tr><td colspan='6'>No data available.</td></tr>";
+                        } else {
+                            foreach ($data as $record) {
+                                echo "<tr>";
+                                echo "<td>" . htmlspecialchars($record[0] ?? 'N/A') . "</td>";
+                                echo "<td>" . htmlspecialchars($record[1] ?? 'N/A') . "</td>";
+                                echo "<td>" . htmlspecialchars($record[2] ?? 'N/A') . "</td>";
+                                echo "<td>" . htmlspecialchars($record[3] ?? 'N/A') . "</td>";
+                                echo "<td>" . htmlspecialchars($record[4] ?? 'N/A') . "</td>";
+                                echo "<td>" . htmlspecialchars($record[5] ?? 'N/A') . "</td>";
+                                echo "</tr>";
+                            }
+                        }
                     }
                 }
                 ?>

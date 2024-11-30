@@ -20,32 +20,36 @@
                     <th>Number of Students</th>
                 </tr>
             </thead>
-            <tbody id="data-body" class="loading">
+            <tbody id="data-body">
                 <!-- Data will be populated dynamically -->
             </tbody>
         </table>
     </main>
     <script>
-        // Fetch data from the PHP backend
-        fetch("fetch.php")
+        // Fetch data from the API using JavaScript's fetch
+        fetch("https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100")
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
                 const tbody = document.getElementById("data-body");
+
                 if (data.error) {
                     tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
                 } else {
-                    data.forEach(row => {
+                    data.results.forEach(record => {
                         const tr = document.createElement("tr");
-                        row.forEach(cell => {
-                            const td = document.createElement("td");
-                            td.textContent = cell;
-                            tr.appendChild(td);
-                        });
+                        tr.innerHTML = `
+                            <td>${record.year}</td>
+                            <td>${record.semester}</td>
+                            <td>${record.the_programs}</td>
+                            <td>${record.nationality}</td>
+                            <td>${record.colleges}</td>
+                            <td>${record.number_of_students}</td>
+                        `;
                         tbody.appendChild(tr);
                     });
                 }

@@ -1,25 +1,32 @@
 <?php
 
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *"); // Allow cross-origin requests if needed
+header("Access-Control-Allow-Origin: *");
 
 // API URL
 $apiURL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
 
-// Fetch data using file_get_contents
-$response = @file_get_contents($apiURL);
+// Initialize cURL session
+$ch = curl_init();
 
-// Check for errors in the response
-if ($response === FALSE) {
-    echo json_encode(["error" => "Failed to fetch data from API."]);
+// Set cURL options
+curl_setopt($ch, CURLOPT_URL, $apiURL);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification (use true in production)
+
+$response = curl_exec($ch);
+
+// Check for errors in cURL execution
+if ($response === false) {
+    echo json_encode(["error" => "Failed to fetch data from API. cURL error: " . curl_error($ch)]);
     exit;
 }
 
-// Decode JSON response
-$data = json_decode($response, true);
+// Close the cURL session
+curl_close($ch);
 
-// Debugging: Log raw response
-file_put_contents('debug_response.json', $response);
+// Decode the JSON response
+$data = json_decode($response, true);
 
 // Check for JSON errors
 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -37,7 +44,6 @@ if (empty($results)) {
 // Prepare data for the frontend
 $result = [];
 foreach ($results as $record) {
-    // Safely handle missing or null values
     $result[] = [
         $record['year'] ?? 'N/A',
         $record['semester'] ?? 'N/A',
@@ -50,4 +56,4 @@ foreach ($results as $record) {
 
 // Return the formatted data as JSON
 echo json_encode($result);
-
+?>

@@ -1,4 +1,23 @@
-<!DOCTYPE html>
+<?php
+$response = file_get_contents("https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100");
+
+try {
+
+    $data = json_decode($response,
+        flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+
+} catch (JsonException $e) {
+    exit($e->getMessage());
+}
+
+/*
+if (json_last_error() !== JSON_ERROR_NONE) {
+
+    echo json_last_error_msg();
+}*/
+
+?>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,56 +28,32 @@
 <body>
     <main>
         <h1>UOB Student Enrollment by Nationality</h1>
-        <table role="table">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Semester</th>
-                    <th>Program</th>
-                    <th>Nationality</th>
-                    <th>College</th>
-                    <th>Number of Students</th>
-                </tr>
-            </thead>
-            <tbody id="data-body">
-                <!-- Data will be populated dynamically -->
-            </tbody>
-        </table>
-    </main>
-    <script>
-        // Fetch data from the API using JavaScript's fetch
-        fetch("https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(HTTP error! Status: ${response.status});
-                }
-                return response.json();
-            })
-            .then(data => {
-                const tbody = document.getElementById("data-body");
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Semester</th>
+                            <th>The Programs</th>
+                            <th>Nationality</th>
+                            <th>College</th>
+                            <th>Number of sudents</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-body">
+                    <?php foreach ($data['results'] as $result) : ?>
+                    <tr>
+                        <td><?= $result['year']?></td>
+                        <td><?= $result['semester']?></td>
+                        <td><?= $result['the_programs']?></td>
+                        <td><?= $result['nationality'] ?></td>
+                        <td><?= $result['colleges'] ?></td>
+                        <td><?= $result['number_of_students'] ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
 
-                if (data.error) {
-                    tbody.innerHTML = <tr><td colspan="6">${data.error}</td></tr>;
-                } else {
-                    data.results.forEach(record => {
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = 
-                            <td>${record.year}</td>
-                            <td>${record.semester}</td>
-                            <td>${record.the_programs}</td>
-                            <td>${record.nationality}</td>
-                            <td>${record.colleges}</td>
-                            <td>${record.number_of_students}</td>
-                        ;
-                        tbody.appendChild(tr);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                const tbody = document.getElementById("data-body");
-                tbody.innerHTML = <tr><td colspan="6">An error occurred while fetching data.</td></tr>;
-            });
-    </script>
+            
+    </main>
 </body>
 </html>

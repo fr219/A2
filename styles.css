@@ -25,11 +25,17 @@ h1 {
     color: #0056b3;
 }
 
+/* Table wrapper for responsiveness */
+.table-wrapper {
+    overflow-x: auto;
+}
+
 /* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 2rem;
+    min-width: 600px;
 }
 
 /* Table header styling */
@@ -38,12 +44,14 @@ table thead th {
     color: #ffffff;
     text-align: left;
     padding: 0.75rem;
+    white-space: nowrap;
 }
 
 /* Table body cell styling */
 table tbody td {
     padding: 0.75rem;
     border-bottom: 1px solid #dee2e6;
+    text-align: left;
 }
 
 /* Alternate row background color */
@@ -65,6 +73,10 @@ td[colspan="6"] {
 
 /* Responsive table adjustments */
 @media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
     table {
         font-size: 0.9rem;
     }
@@ -72,10 +84,6 @@ td[colspan="6"] {
     table thead th,
     table tbody td {
         padding: 0.5rem;
-    }
-
-    h1 {
-        font-size: 1.5rem;
     }
 }
 
